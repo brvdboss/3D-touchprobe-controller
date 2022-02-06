@@ -22,3 +22,7 @@ VSCode with platformIO plugin is my development environment. The platformIO conf
 
 # Warning
 This is very much work in progress!
+
+* Right now this only works when the printhead is connected.  The G30 probe command (https://marlinfw.org/docs/gcode/G030.html) doesn't work when in CNC mode.
+* The ID of the can packet seems to change (I've seen 0x604 and 0x605) and still need to figure out when and where these ID's are assigned
+* 
