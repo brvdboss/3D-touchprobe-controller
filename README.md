@@ -6,6 +6,15 @@ It should work with any Arduino like device. I am using and testing it with an E
 
 CAN message with ID 0x605 and value 0 for detection and value 1 when no detection. Exactly like the inductive sensor in the print head.
 
+## CAN Monitor
+To make it easier to monitor what's happening on the CAN bus a web interface has been added that monitors all messages on the CAN bus. The ESP logs these and sends them through a websocket to the browser. It shows both a full log of all messages as well as a table with for each PacketID, the data paylowds and a counter how often this particular message has been sent.
+
+No data is stored in the ESP, it's just broadcasting it through the websocket. This also means that if you refresh the browser window, the historical data is gone.  However, this does make it easy to test certain things. Refresh the browser, perform the actions you want on the device. (e.g. do a Go Home) And see which messages appear on the CAN bus. (in this case, all the end stops).
+
+![Screenshot](pictures/CANMonitor.png "Screenshot")
+
+The ESP will print the ip-address on the Serial console. Open that in your browser and you should be good to go. Obviously you should not allow this to be accessible from the Internet.
+
 ## Requirements
 
 ### Software
