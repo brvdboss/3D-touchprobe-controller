@@ -117,7 +117,7 @@ void initWebSocket()
 
 /**
  * @brief Group everything that is webrelated and needs to be in setup()
- * 
+ *
  */
 void webSetup()
 {
@@ -213,8 +213,8 @@ void canReadLoop(int packetSize)
 
 /**
  * @brief Read messages from CAN bus and transform it into a JSON object.
- * 
- * @param size 
+ *
+ * @param size
  */
 void canReadJSON(int size)
 {
@@ -255,7 +255,7 @@ void canReadJSON(int size)
 
 /**
  * @brief Testmethod to debug UI stuff. can generate artifical CAN JSON objects
- * 
+ *
  */
 void testJSON()
 {
@@ -263,7 +263,14 @@ void testJSON()
   DynamicJsonDocument doc(1024);
 
   doc["length"] = 12;
-  doc["type"] = "test";
+  if (random(0, 2))
+  {
+    doc["type"] = "normal";
+  }
+  else
+  {
+    doc["type"] = "RTR";
+  }
   doc["rtrlength"] = 12;
   doc["id"] = toHex((long)(random(5)));
 
@@ -284,7 +291,7 @@ void testJSON()
 
 /**
  * @brief Setup CAN bus
- * 
+ *
  * everything CAN releted that needs to be in setup()
  *
  */

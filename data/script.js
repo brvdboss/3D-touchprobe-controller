@@ -56,10 +56,17 @@ function addData(data) {
     pdMap = idMap.get(data.data);
   } else {
     pdMap = new Map();
-    idMap.set(data.data, 0);
+    idMap.set(data.data, pdMap);
   }
-  const count = idMap.get(data.data);
-  idMap.set(data.data, count + 1);
+  //let tMap;
+  if (pdMap.has(data.type)) {
+    //tMap = pdMap.get(data.type);
+  } else {
+    //tMap = new Map();
+    pdMap.set(data.type,0);
+  }
+  const count = pdMap.get(data.type);
+  pdMap.set(data.type, count + 1);
 }
 
 /**
@@ -96,7 +103,7 @@ function mapToTable2(map) {
   const table = document.createElement('table');
   let keys = Array.from(map.keys()).sort();
   keys.forEach(key => {
-    const res = addTableSection(key, map.get(key));
+    const res = addTableSection(false, key, map.get(key));
     table.appendChild(res.child);
   });
   return table;
@@ -105,25 +112,37 @@ function mapToTable2(map) {
 /**
  * Issue with this function: it creates a row too much, compensated with a rowspan of +1
  * not really perfect, but it works I guess
- * 
+ *
+ * @param {*} parent 
  * @param {*} key 
  * @param {*} map 
  * @returns 
  */
-function addTableSection(key, map) {
-  const row = document.createElement('tr');
+function addTableSection(parent, key, map) {
+  let row;
+  if(parent) {
+    row = parent;
+  } else {
+    row = document.createElement('tr');
+  }
   const cell1 = document.createElement('td');
   cell1.appendChild(document.createTextNode(key));
   row.appendChild(cell1);
-  let rowspan = 1;
+  let rowspan = 0;
   if (map instanceof Map) {
     const keys = Array.from(map.keys()).sort();
     let first=true;
     //do the recursion thing
     keys.forEach(k => {
-      const res = addTableSection(k, map.get(k));
-      rowspan += res.size;
-      row.appendChild(res.child);
+      if(first) {
+        const res = addTableSection(row,k, map.get(k));
+        rowspan += res.size;
+        first=false;
+      } else {
+        const res = addTableSection(false,k, map.get(k));
+        rowspan += res.size;
+        row.appendChild(res.child);
+      }
     });
  
   } else {
