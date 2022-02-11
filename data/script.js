@@ -35,7 +35,7 @@ function onMessage(event) {
 
   //insert it in the html at the correct location
   document.getElementById('log').innerHTML = loglist;
-  document.getElementById('statistics').innerHTML = mapToTable(dataMap).outerHTML;
+  document.getElementById('statistics').innerHTML = mapToTable2(dataMap).outerHTML;
   scrollLog();
 }
 
@@ -90,6 +90,53 @@ function mapToTable(map) {
     table.appendChild(row);
   });
   return table;
+}
+
+function mapToTable2(map) {
+  const table = document.createElement('table');
+  let keys = Array.from(map.keys()).sort();
+  keys.forEach(key => {
+    const res = addTableSection(key, map.get(key));
+    table.appendChild(res.child);
+  });
+  return table;
+}
+
+/**
+ * Issue with this function: it creates a row too much, compensated with a rowspan of +1
+ * not really perfect, but it works I guess
+ * 
+ * @param {*} key 
+ * @param {*} map 
+ * @returns 
+ */
+function addTableSection(key, map) {
+  const row = document.createElement('tr');
+  const cell1 = document.createElement('td');
+  cell1.appendChild(document.createTextNode(key));
+  row.appendChild(cell1);
+  let rowspan = 1;
+  if (map instanceof Map) {
+    const keys = Array.from(map.keys()).sort();
+    let first=true;
+    //do the recursion thing
+    keys.forEach(k => {
+      const res = addTableSection(k, map.get(k));
+      rowspan += res.size;
+      row.appendChild(res.child);
+    });
+ 
+  } else {
+    //Last part
+    const cell2 = document.createElement('td');
+    cell2.appendChild(document.createTextNode(map));
+    row.appendChild(cell2);
+    rowspan = 1;
+  }
+  attrib = document.createAttribute("rowspan");
+  attrib.value = rowspan;
+  cell1.setAttributeNode(attrib);
+  return { "size": rowspan, "child": row };
 }
 
 window.addEventListener('load', onLoad);
